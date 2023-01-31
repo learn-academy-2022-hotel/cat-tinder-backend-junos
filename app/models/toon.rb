@@ -1,0 +1,2 @@
+class Toon < ApplicationRecord
+end
