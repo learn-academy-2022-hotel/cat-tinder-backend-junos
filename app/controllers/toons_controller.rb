@@ -5,7 +5,11 @@ class ToonsController < ApplicationController
     end
     def create
         toon = Toon.create(toon_params)
-        render json: toon
+        if toon.valid?
+            render json: toon
+        else
+            render json: toon.errors, status: 422
+        end
     end
 
 

@@ -6,7 +6,7 @@ RSpec.describe "Toons", type: :request do
       Toon.create(
         name: 'Patrick',
         age: 35,
-        enjoys_doing: 'Sleeping',
+        enjoys_doing: 'Sleeping under rock',
         image: 'www.patrick.com'
       )
 
@@ -25,7 +25,7 @@ RSpec.describe "Toons", type: :request do
         toon: {
           name: 'Patrick',
           age: 35,
-          enjoys_doing: 'Sleeping',
+          enjoys_doing: 'Sleeping under rock',
           image: 'www.patrick.com'
         }
       }
@@ -36,6 +36,26 @@ RSpec.describe "Toons", type: :request do
 
       toon = Toon.first
       expect(toon.name).to eq('Patrick')
+    end
+
+    it 'will not create a toon without a name' do
+      toon_params = {
+        toon: {
+          age: 35,
+          enjoys_doing: 'sleep',
+          image: 'www.com'
+        }
+      }
+      # conditional http status
+
+      post '/toons', params: toon_params
+
+      expect(response).to have_http_status(422)
+
+      json = JSON.parse(response.body)
+      # p 'json=', json
+      expect(json["name"]).to include "can't be blank"
+
     end
   end
 end
