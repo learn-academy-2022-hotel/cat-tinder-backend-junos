@@ -42,7 +42,7 @@ RSpec.describe "Toons", type: :request do
       toon_params = {
         toon: {
           age: 35,
-          enjoys_doing: 'sleep',
+          enjoys_doing: 'sleeping under rock',
           image: 'www.com'
         }
       }
@@ -53,8 +53,65 @@ RSpec.describe "Toons", type: :request do
       expect(response).to have_http_status(422)
 
       json = JSON.parse(response.body)
-      # p 'json=', json
+      # p response.body
       expect(json["name"]).to include "can't be blank"
+
+    end
+    it 'will not create a toon without a age' do
+      toon_params = {
+        toon: {
+          name: 'Patrick',
+          enjoys_doing: 'sleeping under rock',
+          image: 'www.com'
+        }
+      }
+      # conditional http status
+
+      post '/toons', params: toon_params
+
+      expect(response).to have_http_status(422)
+
+      json = JSON.parse(response.body)
+      # p response.body
+      expect(json["age"]).to include "can't be blank"
+
+    end
+    it 'will not create a toon without an enjoys_doing' do
+      toon_params = {
+        toon: {
+          name: 'Patrick',
+          age: 35,
+          image: 'www.com'
+        }
+      }
+      # conditional http status
+
+      post '/toons', params: toon_params
+
+      expect(response).to have_http_status(422)
+
+      json = JSON.parse(response.body)
+      # p response.body
+      expect(json["enjoys_doing"]).to include "can't be blank"
+
+    end
+    it 'will not create a toon without an image' do
+      toon_params = {
+        toon: {
+          name: 'Patrick',
+          age: 35,
+          enjoys_doing: 'sleeping under rock'
+        }
+      }
+      # conditional http status
+
+      post '/toons', params: toon_params
+
+      expect(response).to have_http_status(422)
+
+      json = JSON.parse(response.body)
+      # p response.body
+      expect(json["image"]).to include "can't be blank"
 
     end
   end
