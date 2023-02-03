@@ -23,6 +23,16 @@ class ToonsController < ApplicationController
         end
     end
 
+    def destroy
+        toon = Toon.find(params[:id])
+        if toon.valid?
+            toon.delete()
+            render json: toon
+        else
+            render json: toon.errors, status: 422
+        end
+    end
+
     private
     def toon_params
         params.require(:toon).permit(:name, :age, :enjoys_doing, :image)

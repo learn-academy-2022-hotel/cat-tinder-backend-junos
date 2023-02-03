@@ -120,7 +120,7 @@ RSpec.describe "Toons", type: :request do
   end
 
   describe 'PATCH /update/:id' do
-    it 'will update a whole toon info' do
+    it 'will update toon info' do
       toon_params = {
         toon: {
           name: 'Buster',
@@ -150,5 +150,25 @@ RSpec.describe "Toons", type: :request do
       expect(new_toon.name).to eq 'Not Buster'
     end
   end
-  
+
+  describe 'DELETE /destroy/:id' do
+    it 'will delete a toon' do
+      toon_params = {
+        toon: {
+          name: 'Buster',
+          age: 4,
+          enjoys_doing: 'Meow Mix, and plenty of sunshine.',
+          image: 'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1036&q=80'
+        }
+      }
+
+      post '/toons', params: toon_params
+      expect(response).to have_http_status(200)
+      toon = Toon.first
+      expect(toon.name).to eq 'Buster'
+
+      delete "/toons/#{toon.id}"
+      expect(Toon.all.length).to eq(0)
+    end
+  end
 end
