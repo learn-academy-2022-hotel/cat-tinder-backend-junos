@@ -57,6 +57,7 @@ RSpec.describe "Toons", type: :request do
       expect(json["name"]).to include "can't be blank"
 
     end
+
     it 'will not create a toon without a age' do
       toon_params = {
         toon: {
@@ -76,6 +77,7 @@ RSpec.describe "Toons", type: :request do
       expect(json["age"]).to include "can't be blank"
 
     end
+
     it 'will not create a toon without an enjoys_doing' do
       toon_params = {
         toon: {
@@ -95,6 +97,7 @@ RSpec.describe "Toons", type: :request do
       expect(json["enjoys_doing"]).to include "can't be blank"
 
     end
+
     it 'will not create a toon without an image' do
       toon_params = {
         toon: {
@@ -112,7 +115,60 @@ RSpec.describe "Toons", type: :request do
       json = JSON.parse(response.body)
       # p response.body
       expect(json["image"]).to include "can't be blank"
+    
+    end
+  end
 
+  describe 'PATCH /update/:id' do
+    it 'will update toon info' do
+      toon_params = {
+        toon: {
+          name: 'Buster',
+          age: 4,
+          enjoys_doing: 'Meow Mix, and plenty of sunshine.',
+          image: 'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1036&q=80'
+        }
+      }
+
+      post '/toons', params: toon_params
+      expect(response).to have_http_status(200)
+      toon = Toon.first
+      expect(toon.name).to eq 'Buster'
+
+      toon_updated_params = {
+        toon: {
+          name: 'Not Buster',
+          age: 4,
+          enjoys_doing: 'Meow Mix, and plenty of sunshine.',
+          image: 'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1036&q=80'
+        }
+      }
+
+      patch "/toons/#{toon.id}", params: toon_updated_params
+      expect(response).to have_http_status(200)
+      new_toon = Toon.first
+      expect(new_toon.name).to eq 'Not Buster'
+    end
+  end
+
+  describe 'DELETE /destroy/:id' do
+    it 'will delete a toon' do
+      toon_params = {
+        toon: {
+          name: 'Buster',
+          age: 4,
+          enjoys_doing: 'Meow Mix, and plenty of sunshine.',
+          image: 'https://images.unsplash.com/photo-1529778873920-4da4926a72c2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1036&q=80'
+        }
+      }
+
+      post '/toons', params: toon_params
+      expect(response).to have_http_status(200)
+      toon = Toon.first
+      expect(toon.name).to eq 'Buster'
+
+      delete "/toons/#{toon.id}"
+      expect(Toon.all.length).to eq(0)
     end
   end
 end
